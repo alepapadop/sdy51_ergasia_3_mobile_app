@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "274950697358",
+    "firebase_url": "https://sdy51ergasi3.firebaseio.com",
+    "project_id": "sdy51ergasi3",
+    "storage_bucket": "sdy51ergasi3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274950697358:android:f9cf3125a93d7ddd",
+        "android_client_info": {
+          "package_name": "com.positron.alepapadop.sdy51ergasi3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "274950697358-14o3a6dqqfvmap806g03ml992lgfcre3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.positron.alepapadop.sdy51ergasi3",
+            "certificate_hash": "a7003abd4083aeffc57786b42d0868556308a184"
+          }
+        },
+        {
+          "client_id": "274950697358-v86ff6169erjh4bj90adgmcmdo4ldpuu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEEfug_8XQKkgrEOaS7A3baCVFWIiBP9w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "274950697358-v86ff6169erjh4bj90adgmcmdo4ldpuu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
