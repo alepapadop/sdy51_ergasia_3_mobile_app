@@ -213,7 +213,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void statNextIntent() {
-        Intent intent = new Intent(this, SendData.class);
+        //Intent intent = new Intent(this, SendData.class);
+        Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
 

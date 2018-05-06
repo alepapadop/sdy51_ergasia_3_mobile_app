@@ -19,4 +19,5 @@
     <string name="lon">Longitude</string>
     <string name="lat">Latitude</string>
     <string name="send">Send</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

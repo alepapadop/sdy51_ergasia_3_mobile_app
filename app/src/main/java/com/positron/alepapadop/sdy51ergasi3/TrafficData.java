@@ -9,6 +9,9 @@ public class TrafficData {
     public Double longitude;
     public Double latitude;
     public String traffic;
+    public Integer neg_feedback;
+    public Integer pos_feedback;
+
 
     // Default constructor required for calls to
     // DataSnapshot.getValue(User.class)
@@ -20,6 +23,8 @@ public class TrafficData {
         this.traffic = traffic;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.neg_feedback = 0;
+        this.pos_feedback = 0;
     }
 
 }
