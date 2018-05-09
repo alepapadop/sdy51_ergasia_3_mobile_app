@@ -5,12 +5,12 @@ package com.positron.alepapadop.sdy51ergasi3;
  */
 
 public class TrafficData {
-    public String timestamp;
-    public Double longitude;
     public Double latitude;
-    public String traffic;
+    public Double longitude;
     public Integer neg_feedback;
     public Integer pos_feedback;
+    public String timestamp;
+    public String traffic;
 
 
     // Default constructor required for calls to

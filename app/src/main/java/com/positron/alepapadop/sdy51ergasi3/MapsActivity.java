@@ -1,10 +1,14 @@
 package com.positron.alepapadop.sdy51ergasi3;
 
 import android.app.AlertDialog;
+
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -53,6 +57,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Log.d(TAG, "onCreate");
+        mMarkersSet = false;
+        mTrafficSnapshotUser.clear();
+
         mDatabase = FirebaseDatabase.getInstance();
 
         DatabaseReference ref = mDatabase.getReference("data");
@@ -96,6 +104,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == 1) {
+            finish();
+            startActivity(getIntent());
+        }
+    }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -119,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void addMarkersToMap() {
         if (!mMarkersSet && mMap != null && !mTrafficSnapshotUser.isEmpty()) {
 
-            //Log.d(TAG, "AddMarkers");
+            Log.d(TAG, "AddMarkers");
 
             int count = 0;
             mMarkersSet = true;
@@ -132,7 +149,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     MarkerTagData markerTagData = new MarkerTagData();
                     markerTagData.user_id = trafficSnapshotUser.getKey();
-                    Log.d(TAG, trafficSnapshotUser.getKey());
+                    //Log.d(TAG, trafficSnapshotUser.getKey());
 
                     //Log.d(TAG, "traffic child: " + trafficSnapShotMessage.child("traffic").toString());
 
@@ -209,7 +226,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     });
 
                     mMap.setOnInfoWindowClickListener(this);
-                    if (count == 0) {
+                    if (count == mTrafficSnapshotUser.size() - 1) {
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mark, 10));
                     }
                     ++count;
@@ -222,7 +239,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onInfoWindowClick(final Marker marker) {
-        Log.d(TAG, "Click marker");
+        //Log.d(TAG, "Click marker");
 
         LinearLayout button_layout = new LinearLayout(MapsActivity.this);
         button_layout.setOrientation(LinearLayout.HORIZONTAL);
@@ -233,13 +250,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         pos.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                Log.d(TAG, "Up pressed");
+                //Log.d(TAG, "Up pressed");
                 final MarkerTagData markerTagData = (MarkerTagData) marker.getTag();
 
                 Integer pos = markerTagData.trafficData.pos_feedback + 1;
 
-                Log.d(TAG, markerTagData.message_id);
-                Log.d(TAG, markerTagData.trafficData.timestamp);
+                //Log.d(TAG, markerTagData.message_id);
+                //Log.d(TAG, markerTagData.trafficData.timestamp);
 
                 try {
                     mDatabase.getReference().child("data").child(markerTagData.user_id).child(markerTagData.message_id).child("pos_feedback").setValue(pos);
@@ -263,13 +280,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         neg.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                Log.d(TAG, "Down pressed");
+                //Log.d(TAG, "Down pressed");
                 final MarkerTagData markerTagData = (MarkerTagData) marker.getTag();
 
                 Integer neg = markerTagData.trafficData.neg_feedback + 1;
 
-                Log.d(TAG, markerTagData.message_id);
-                Log.d(TAG, markerTagData.trafficData.timestamp);
+                //Log.d(TAG, markerTagData.message_id);
+                //Log.d(TAG, markerTagData.trafficData.timestamp);
 
                 try {
                     mDatabase.getReference().child("data").child(markerTagData.user_id).child(markerTagData.message_id).child("neg_feedback").setValue(neg);
@@ -297,5 +314,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         builder.create();
         mDialog = builder.show();
 
+    }
+
+
+    public void CreateReport(View v) {
+        if (v.getId() == R.id.create_report) {
+            Log.d(TAG, "Click my button");
+            Intent intent = new Intent(this, SendData.class);
+            startActivity(intent);
+        }
     }
 }

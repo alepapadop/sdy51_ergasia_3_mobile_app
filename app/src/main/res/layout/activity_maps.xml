@@ -9,15 +9,17 @@
     tools:context=".MapsActivity">
 
     <Button
+        android:id="@+id/create_report"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|top"
-        android:text="Demo Button"
-        android:padding="10dp"
+        android:layout_gravity="center|bottom"
+        android:text="@string/create_report"
+        android:padding="20dp"
         android:layout_marginTop="20dp"
-        android:paddingRight="10dp"/>
-
+        android:paddingRight="10dp"
+        android:onClick="CreateReport"/>
     />
+
 </fragment>
 
 

@@ -1,6 +1,7 @@
 package com.positron.alepapadop.sdy51ergasi3;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -8,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -20,13 +22,26 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class SendData extends AppCompatActivity {
+
+public class SendData extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener  {
 
     private EditText mLat;
     private EditText mLon;
@@ -36,6 +51,15 @@ public class SendData extends AppCompatActivity {
     private FirebaseDatabase mDatabase;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
+    private static final String TAG = "SDY51";
+    private int PLACE_PICKER_REQUEST = 1;
+    private Double mLastLat = 0.0;
+    private Double mLastLog = 0.0;
+    private GoogleMap mMap = null;
+    private Boolean firstMarker = false;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +92,25 @@ public class SendData extends AppCompatActivity {
             @Override
             public void onLocationChanged(Location location) {
                 Log.d("Location Changes", location.toString());
-                mLat.setText(String.valueOf(location.getLatitude()));
-                mLon.setText(String.valueOf(location.getLongitude()));
+
+                mLastLat = location.getLatitude();
+                mLastLog = location.getLongitude();
+
+                if (!firstMarker) {
+                    mLat.setText(String.valueOf(location.getLatitude()));
+                    mLon.setText(String.valueOf(location.getLongitude()));
+                }
+
+                if (mMap != null) {
+                    if (!firstMarker) {
+                        mMap.clear();
+                        AddMarker(location.getLatitude(), location.getLongitude());
+                    }
+                }
+
+                if (!firstMarker) {
+                    firstMarker = true;
+                }
             }
 
             @Override
@@ -111,6 +152,7 @@ public class SendData extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                firstMarker = false;
                 if (ActivityCompat.checkSelfPermission(SendData.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SendData.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -127,7 +169,18 @@ public class SendData extends AppCompatActivity {
                 locationManager.requestSingleUpdate(criteria, locationListener, looper);
             }
         });
+        mButton.performClick();
+
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
+
+
     }
+
 
     protected void send_data_to_database() {
 
@@ -142,9 +195,46 @@ public class SendData extends AppCompatActivity {
 
         mRef.setValue(mCurrentUser.getUid());
 
+        Log.d(TAG, "Send Data");
+
         TrafficData trafficData = new TrafficData(timestamp.toString(), traffic.toString(), Double.valueOf(lon), Double.valueOf(lat));
         mRef = mDatabase.getReference("data");
+        Log.d(TAG, mCurrentUser.getUid());
         mRef.child(mCurrentUser.getUid()).push().setValue(trafficData);
+
+        Intent i = new Intent(this, MapsActivity.class);
+        startActivityForResult(i, 1);
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    public void AddMarker(Double Lat, Double Log) {
+        mMap.clear();
+        LatLng loc = new LatLng(Lat, Log);
+        mMap.addMarker(new MarkerOptions().position(loc)
+                .title("You are here"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 10));
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+                mMap.clear();
+                AddMarker(point.latitude, point.longitude);
+                mLat.setText(String.valueOf(point.latitude));
+                mLon.setText(String.valueOf(point.longitude));
+                Log.d(TAG, "Click on map");
+            }
+        });
+
 
     }
 
