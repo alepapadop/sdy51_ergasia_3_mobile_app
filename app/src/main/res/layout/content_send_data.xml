@@ -29,10 +29,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:text="Uset the Location button to \nget the current location info \n if not available already"
+            android:text="Uset the Location button to \nget the current location\n You can set the location by clicking on the map"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="20dp" />
+            android:textSize="14dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,7 +104,7 @@
                 android:text="More stars, more traffic. \nUse the stars to rate the current traffic"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
-                android:textSize="20dp" />
+                android:textSize="14dp" />
 
             <RatingBar
                 android:id="@+id/rate"
