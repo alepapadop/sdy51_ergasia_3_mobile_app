@@ -57,6 +57,8 @@ public class SendData extends AppCompatActivity implements OnMapReadyCallback, G
     private Double mLastLog = 0.0;
     private GoogleMap mMap = null;
     private Boolean firstMarker = false;
+    private Boolean should_i_zoom = true;
+
 
 
 
@@ -76,6 +78,7 @@ public class SendData extends AppCompatActivity implements OnMapReadyCallback, G
         mDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
+        should_i_zoom = true;
 
 
 
@@ -217,7 +220,12 @@ public class SendData extends AppCompatActivity implements OnMapReadyCallback, G
         LatLng loc = new LatLng(Lat, Log);
         mMap.addMarker(new MarkerOptions().position(loc)
                 .title("You are here"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 10));
+        if (should_i_zoom) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 10));
+            should_i_zoom = false;
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        }
     }
 
     @Override
