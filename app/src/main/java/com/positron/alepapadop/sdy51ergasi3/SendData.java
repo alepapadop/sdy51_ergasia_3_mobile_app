@@ -190,7 +190,7 @@ public class SendData extends AppCompatActivity implements OnMapReadyCallback, G
         DatabaseReference mRef;
 
         Long timestamp = System.currentTimeMillis() / 1000L;
-        Integer traffic = mRate.getNumStars();
+        Integer traffic = (int)mRate.getRating();
         String lon = mLon.getText().toString();
         String lat = mLat.getText().toString();
 
